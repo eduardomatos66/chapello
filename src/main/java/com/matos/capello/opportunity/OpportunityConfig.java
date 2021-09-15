@@ -27,7 +27,8 @@ public class OpportunityConfig {
 //                        List.of(""),
                     LocalDate.of(2020, Month.JUNE, 1),
                     ""
-                );
+            );
+
             Opportunity o2 = new Opportunity(
                     "OPP-0002",
                     "Title2",
@@ -41,9 +42,9 @@ public class OpportunityConfig {
 //                        List.of(""),
                     LocalDate.of(2020, Month.AUGUST, 21),
                     ""
-                );
-            repository.saveAll(List.of(o1, o2));
+            );
 
+            repository.saveAll(List.of(o1, o2));
         };
     }
 

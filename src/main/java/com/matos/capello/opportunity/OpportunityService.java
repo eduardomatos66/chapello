@@ -19,36 +19,12 @@ public class OpportunityService {
     @GetMapping
     public List<Opportunity> getOpportunities() {
         return this.opportunityRepository.findAll();
-//        return List.of(
-//                new Opportunity(
-//                        "OPP-0001",
-//                        "Title",
-//                        "Description",
-////                        List.of("ai", "test"),
-//                        "ON GOING",
-//                        "ematos",
-//                        "smoke test",
-////                        List.of("ematos"),
-//                        "high",
-////                        List.of(""),
-//                        LocalDate.now(),
-//                        ""
-//                ),
-//                new Opportunity(
-//                        "OPP-0002",
-//                        "Title2",
-//                        "Description2",
-////                        List.of("test"),
-//                        "DONE",
-//                        "raphaelf",
-//                        "research test",
-////                        List.of("raphaelf"),
-//                        "high",
-////                        List.of(""),
-//                        LocalDate.now(),
-//                        ""
-//                )
-//        );
     }
 
+    public void addNewOpportunity(Opportunity opportunity) {
+        if (this.opportunityRepository.findOpportunityByKey(opportunity.getKey()).isPresent()) {
+            throw new IllegalStateException("The opportunity's key is already registered!!");
+        }
+        this.opportunityRepository.save(opportunity);
+    }
 }
