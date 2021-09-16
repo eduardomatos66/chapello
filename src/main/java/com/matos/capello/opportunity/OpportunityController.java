@@ -26,4 +26,16 @@ public class OpportunityController {
         this.opportunityService.addNewOpportunity(opportunity);
     }
 
+    @DeleteMapping(path = "{oportunityId}")
+    public void deleteOpportunity(@PathVariable("oportunityId") Long opportunityId) {
+        this.opportunityService.deleteOpportunity(opportunityId);
+    }
+
+    @PutMapping(path = "{oportunityId}")
+    public void updateOpportunity(@PathVariable("oportunityId") Long opportunityId,
+                                  @RequestParam(required = false) String title,
+                                  @RequestParam(required = false) String description) {
+
+        this.opportunityService.updateOpportunity(opportunityId, title, description);
+    }
 }
