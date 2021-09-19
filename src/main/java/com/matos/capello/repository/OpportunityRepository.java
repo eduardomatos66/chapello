@@ -1,5 +1,6 @@
-package com.matos.capello.opportunity;
+package com.matos.capello.repository;
 
+import com.matos.capello.model.Opportunity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;

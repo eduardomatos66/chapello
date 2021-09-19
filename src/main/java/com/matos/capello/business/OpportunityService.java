@@ -1,5 +1,7 @@
-package com.matos.capello.opportunity;
+package com.matos.capello.business;
 
+import com.matos.capello.model.Opportunity;
+import com.matos.capello.repository.OpportunityRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;

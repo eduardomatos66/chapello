@@ -1,5 +1,7 @@
-package com.matos.capello.opportunity;
+package com.matos.capello.configs;
 
+import com.matos.capello.model.Opportunity;
+import com.matos.capello.repository.OpportunityRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

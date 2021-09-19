@@ -1,4 +1,4 @@
-package com.matos.capello.opportunity;
+package com.matos.capello.model;
 
 
 import javax.persistence.*;
