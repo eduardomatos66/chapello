@@ -1,8 +1,10 @@
 package com.matos.capello.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matos.capello.CapelloApplicationTests;
 import com.matos.capello.model.Opportunity;
+import org.hamcrest.Matchers;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -13,7 +15,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
+import java.net.URI;
 import java.util.List;
+import java.util.Optional;
 
 
 class OpportunityControllerTest extends CapelloApplicationTests {
@@ -28,9 +32,8 @@ class OpportunityControllerTest extends CapelloApplicationTests {
         this.mockMvc = MockMvcBuilders.standaloneSetup(this.opportunityController).build();
     }
 
-
-    private void insertOneOpportunity(String key) {
-        Opportunity opportunity = new Opportunity(
+    private Opportunity getOpportunityObj(String key) {
+        return new Opportunity(
                 key,
                 "title",
                 "description",
@@ -40,25 +43,30 @@ class OpportunityControllerTest extends CapelloApplicationTests {
                 "priority",
                 null,
                 "comments");
-        this.opportunityController.registerNewOpportunity(opportunity);
+    }
+
+    private String createJsonOpportunity() throws JsonProcessingException {
+        Opportunity opportunity = this.getOpportunityObj("key");
+        ObjectMapper objectMapper = new ObjectMapper();
+        return objectMapper.writeValueAsString(opportunity);
     }
 
     @Test
     public void testGetOpportunitiesReturns() throws Exception {
-        List<Opportunity> response = this.opportunityController.getOpportunities();
+        List<Opportunity> response = this.opportunityController.getOpportunities(null, null);
         // TODO: Update with local creation besides using the currently production configuration
-        Assert.assertEquals(response.size(), 2);
+        Assert.assertTrue(response.size() >= 2);
     }
 
     @Test
     public void testGetOpportunitiesReturns200() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/opportunity"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/opportunity"))
                 .andExpect(MockMvcResultMatchers.status().isOk());
     }
 
     @Test
     public void testGetOpportunitiesReturnsMediaTypeJSON() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/opportunity"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/opportunity"))
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
     }
 
@@ -71,61 +79,62 @@ class OpportunityControllerTest extends CapelloApplicationTests {
                 "Title2\",\"description\":\"Description2\",\"progress\":\"DONE\",\"suggestedBy\":\"raphaelf\",\"impac" +
                 "ted_areas\":\"research test\",\"priority\":\"high\",\"registerDate\":[2020,8,21],\"comments\":\"\"}]";
 
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/opportunity"))
-                .andExpect(MockMvcResultMatchers.content().string(expectedResult));
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/opportunity"))
+                .andExpect(MockMvcResultMatchers.content().string(Matchers.containsString(expectedResult)));
     }
 
     @Test
     public void testGetOpportunitiesReturns404() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/opportunit"))
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/opportunit"))
                 .andExpect(MockMvcResultMatchers.status().isNotFound());
     }
 
     @Test
     public void testRegisterNewOpportunity_Response201() throws Exception {
-        Opportunity opportunity = new Opportunity(
-                "key",
-                "title",
-                "description",
-                "progress",
-                "suggestedBy",
-                "impacted_areas",
-                "priority",
-                null,
-                "comments");
-        ObjectMapper objectMapper = new ObjectMapper();
-        String json = objectMapper.writeValueAsString(opportunity);
+        String json = this.createJsonOpportunity();
 
-        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/opportunity")
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/api/opportunity")
                                 .contentType(MediaType.APPLICATION_JSON).content(json))
                 .andExpect(MockMvcResultMatchers.status().isCreated());
 //                .andExpect(MockMvcResultMatchers.header().string("location",
-//                        Matchers.containsString("http://localhost/api/v1/opportunity")));
+//                        Matchers.containsString("http://localhost/api/opportunity")));
     }
 
     @Test
     public void testUpdateOpportunityReturns202() throws Exception {
-        this.insertOneOpportunity("updateOpp");
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/opportunity/3"))
+        Opportunity opportunity = this.getOpportunityObj("updateOpp");
+        this.opportunityController.registerNewOpportunity(opportunity);
+        Opportunity opp = this.opportunityController.getOpportunities(0L,"updateOpp").get(0);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("/api/opportunity/%s", opp.getId())))
                 .andExpect(MockMvcResultMatchers.status().isAccepted());
     }
 
     @Test
     public void testUpdateOpportunityReturnsObjectJSON() throws Exception {
-        this.insertOneOpportunity("updateOpp1");
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/opportunity/3?title=MopsTitle"))
+        Opportunity opportunity = this.getOpportunityObj("updateOpp1");
+        this.opportunityController.registerNewOpportunity(opportunity);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/opportunity/4?title=MopsTitle"))
                 .andExpect(MockMvcResultMatchers.status().isAccepted());
     }
 
     @Test
     public void testDeleteOpportunityReturn202() throws Exception {
-        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/opportunity/2"))
+        Opportunity opportunity = this.getOpportunityObj("toBeDeleted");
+        this.opportunityController.registerNewOpportunity(opportunity);
+        Opportunity opp = this.opportunityController.getOpportunities(0L,"toBeDeleted").get(0);
+
+        this.mockMvc.perform(MockMvcRequestBuilders.delete(String.format("/api/opportunity/%s", opp.getId())))
                 .andExpect(MockMvcResultMatchers.status().isAccepted());
     }
 
     @Test
     public void testDeleteOpportunityReturn404() throws Exception {
-//        this.mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/opportunity/2999"))
-//                .andReturn();
+        Opportunity opportunity = this.getOpportunityObj("toBeDeleted");
+//        this.opportunityController.registerNewOpportunity(opportunity);
+//
+//        this.mockMvc.perform(MockMvcRequestBuilders.delete("/api/opportunity/123"))
+//                .andExpect(MockMvcResultMatchers.status().isAccepted());
     }
 }

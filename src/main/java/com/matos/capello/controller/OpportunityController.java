@@ -9,8 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(path="api/v1/opportunity")
-public class OpportunityController {
+@RequestMapping(path="api/opportunity")
+public class OpportunityController extends AbstractController {
 
     private final OpportunityService opportunityService;
 
@@ -21,8 +21,10 @@ public class OpportunityController {
 
     @GetMapping
     @ResponseStatus(value = HttpStatus.OK)
-    public List<Opportunity> getOpportunities() {
-        return this.opportunityService.getOpportunities();
+    public List<Opportunity> getOpportunities(@PathVariable(value = "oportunityId", required = false) Long opportunityId,
+                                              @RequestParam(required = false) String key) {
+
+        return this.opportunityService.getOpportunities(opportunityId, key);
     }
 
     @PostMapping
