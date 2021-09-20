@@ -8,10 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class OpportunityService {
@@ -24,10 +21,11 @@ public class OpportunityService {
     }
 
     @GetMapping
-    public List<Opportunity> getOpportunities(Long id, String key) {
+    public List<Opportunity> getOpportunities(Long id, Map<String, String> fieldsString) {
+
         List<Opportunity> opportunities = new ArrayList<>();
-        if (Strings.isNotBlank(key)) {
-            Opportunity opportunity = this.opportunityRepository.findOpportunityByKey(key).orElse(null);
+        if (Strings.isNotBlank(fieldsString.get("key"))) {
+            Opportunity opportunity = this.opportunityRepository.findOpportunityByKey(fieldsString.get("key"));
             opportunities.add(opportunity);
         } else if (id != null && id > 0) {
             Opportunity opportunity = this.opportunityRepository.findById(id).orElse(null);
@@ -43,12 +41,8 @@ public class OpportunityService {
         return this.opportunityRepository.findById(opportunityId);
     }
 
-    public Optional<Opportunity> getOpportunityByKey(String opportunityKey) {
-        return this.opportunityRepository.findOpportunityByKey(opportunityKey);
-    }
-
     public void addNewOpportunity(Opportunity opportunity) {
-        if (this.opportunityRepository.findOpportunityByKey(opportunity.getKey()).isPresent()) {
+        if (this.opportunityRepository.findOpportunityByKey(opportunity.getKey()) != null) {
             throw new IllegalStateException("The opportunity's key is already registered!!");
         }
         this.opportunityRepository.save(opportunity);

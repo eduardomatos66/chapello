@@ -7,6 +7,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping(path="api/opportunity")
@@ -19,12 +20,12 @@ public class OpportunityController extends AbstractController {
         this.opportunityService = opportunityService;
     }
 
-    @GetMapping
+    @GetMapping(path="api/opportunity/{oportunityId}")
     @ResponseStatus(value = HttpStatus.OK)
     public List<Opportunity> getOpportunities(@PathVariable(value = "oportunityId", required = false) Long opportunityId,
-                                              @RequestParam(required = false) String key) {
+                                              @RequestParam(name = "fields", required = false) Map<String, String> fields) {
 
-        return this.opportunityService.getOpportunities(opportunityId, key);
+        return this.opportunityService.getOpportunities(opportunityId, fields);
     }
 
     @PostMapping

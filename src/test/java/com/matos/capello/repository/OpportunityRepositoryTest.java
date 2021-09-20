@@ -1,17 +1,71 @@
 package com.matos.capello.repository;
 
-import com.matos.capello.CapelloApplicationTests;
+import com.matos.capello.model.Opportunity;
+
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
-class OpportunityRepositoryTest extends CapelloApplicationTests {
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 
 
-    private MockMvc mockMvc;
+@DataJpaTest
+class OpportunityRepositoryTest {
 
     @Autowired
-    private OpportunityRepository opportunityRepository;
+    private OpportunityRepository underTest;
+
+    @AfterEach
+    void tearDown() {
+        underTest.deleteAll();
+    }
+
+    @Test
+    void testSearchExistentExistentOpportunityByKey() {
+        // given
+        String key = "OPP-0001";
+        Opportunity opportunity = new Opportunity(
+                key,
+                "title",
+                "description",
+                "progress",
+                "suggestedBy",
+                "impacted_areas",
+                "priority",
+                null,
+                "comments"
+        );
+        this.underTest.save(opportunity);
+
+        // when
+        Opportunity expected = this.underTest.findOpportunityByKey(key);
+
+        //then
+        assertThat(expected).isEqualTo(opportunity);
+    }
+
+    @Test
+    void testSearchNonExistentOpportunityByKey() {
+        // given
+        String key = "OPP-0001";
+        Opportunity opportunity = new Opportunity(
+                key,
+                "title",
+                "description",
+                "progress",
+                "suggestedBy",
+                "impacted_areas",
+                "priority",
+                null,
+                "comments"
+        );
+
+        // when
+        Opportunity expected = this.underTest.findOpportunityByKey(key);
+
+        //then
+        assertThat(expected).isNull();
+    }
 
 }
