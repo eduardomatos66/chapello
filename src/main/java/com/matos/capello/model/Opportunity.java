@@ -48,6 +48,19 @@ public class Opportunity {
         this.comments = comments;
     }
 
+    public Opportunity(Long id, String key, String title, String description, String progress, String suggestedBy, String impacted_areas, String priority, LocalDate registerDate, String comments) {
+        this.id = id;
+        this.key = key;
+        this.title = title;
+        this.description = description;
+        this.progress = progress;
+        this.suggestedBy = suggestedBy;
+        this.impacted_areas = impacted_areas;
+        this.priority = priority;
+        this.registerDate = registerDate;
+        this.comments = comments;
+    }
+
     public Long getId() {
         return id;
     }
