@@ -80,17 +80,13 @@ class OpportunityControllerTest extends CapelloApplicationTests {
 
     @Test
     void willThrowWhenDeleteStudentNotFound() {
-        // given
         long id = 10;
-        given(this.opportunityService.getOpportunityById(id)).willThrow(OpportunityNotExistentException.class);
+        doThrow(new OpportunityNotExistentException("The opportunity with id " + id + " does not exists"))
+                .when(this.opportunityService).deleteOpportunity(id);
 
-        // when
-        // then
         assertThatThrownBy(() -> this.underTest.deleteOpportunity(id))
                 .isInstanceOf(OpportunityNotExistentException.class)
                 .hasMessageContaining("The opportunity with id " + id + " does not exists");
-
-        verify(this.opportunityService, never()).deleteOpportunity(any());
     }
 
     @Test

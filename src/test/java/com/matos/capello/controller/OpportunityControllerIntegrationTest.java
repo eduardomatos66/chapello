@@ -3,6 +3,7 @@ package com.matos.capello.controller;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.matos.capello.CapelloApplicationTests;
+import com.matos.capello.exception.OpportunityNotExistentException;
 import com.matos.capello.model.Opportunity;
 import org.junit.Assert;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,10 +15,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
-import java.util.List;
-
-import static org.mockito.Mockito.RETURNS_DEEP_STUBS;
-import static org.mockito.Mockito.mock;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 
 class OpportunityControllerIntegrationTest extends CapelloApplicationTests {
@@ -59,6 +59,22 @@ class OpportunityControllerIntegrationTest extends CapelloApplicationTests {
     }
 
     @Test
+    void testGetOpportunityByIdReturnsOpportunityWithId() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/opportunity/1"))
+                .andExpect(MockMvcResultMatchers.status().isOk());
+    }
+
+    @Test
+    void testGetOpportunityByIdThrowsException() throws Exception {
+        this.mockMvc.perform(MockMvcRequestBuilders.get("/api/opportunity/99"))
+                .andExpect(status().isNotFound())
+                .andExpect(result -> assertNotNull(result.getResolvedException()))
+                .andExpect(result -> assertTrue(result.getResolvedException() instanceof OpportunityNotExistentException))
+                .andExpect(result -> Assert.assertEquals("There is no opportunity for id: 99",
+                        result.getResolvedException().getMessage()));
+    }
+
+    @Test
     void testGetOpportunitiesReturnsMediaTypeJSON() throws Exception {
         this.mockMvc.perform(MockMvcRequestBuilders.get("/api/opportunity"))
                 .andExpect(MockMvcResultMatchers.content().contentTypeCompatibleWith(MediaType.APPLICATION_JSON));
@@ -90,7 +106,7 @@ class OpportunityControllerIntegrationTest extends CapelloApplicationTests {
         Opportunity opp = this.opportunityController.getOpportunities().get(0);
 
         this.mockMvc.perform(MockMvcRequestBuilders.put(String.format("/api/opportunity/%s", opp.getId())))
-                .andExpect(MockMvcResultMatchers.status().isAccepted());
+                .andExpect(status().isAccepted());
     }
 
     @Test
@@ -99,7 +115,7 @@ class OpportunityControllerIntegrationTest extends CapelloApplicationTests {
         this.opportunityController.registerNewOpportunity(opportunity);
 
         this.mockMvc.perform(MockMvcRequestBuilders.put("/api/opportunity/4?title=MopsTitle"))
-                .andExpect(MockMvcResultMatchers.status().isAccepted());
+                .andExpect(status().isAccepted());
     }
 
     @Test

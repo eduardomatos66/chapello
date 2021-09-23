@@ -2,7 +2,7 @@ package com.matos.capello.controller;
 
 import com.matos.capello.model.Opportunity;
 import com.matos.capello.business.OpportunityService;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
@@ -10,14 +10,10 @@ import java.util.List;
 
 @RestController
 @RequestMapping(path="api/opportunity")
+@AllArgsConstructor
 public class OpportunityController extends AbstractController {
 
     private final OpportunityService opportunityService;
-
-    @Autowired
-    public OpportunityController(OpportunityService opportunityService) {
-        this.opportunityService = opportunityService;
-    }
 
     @GetMapping(path="")
     @ResponseStatus(value = HttpStatus.OK)

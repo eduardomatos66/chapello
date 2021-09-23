@@ -3,7 +3,8 @@ package com.matos.capello.business;
 import com.matos.capello.exception.OpportunityNotExistentException;
 import com.matos.capello.model.Opportunity;
 import com.matos.capello.repository.OpportunityRepository;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -11,14 +12,11 @@ import javax.transaction.Transactional;
 import java.util.*;
 
 @Service
+@Slf4j
+@AllArgsConstructor
 public class OpportunityService {
 
     private final OpportunityRepository opportunityRepository;
-
-    @Autowired
-    public OpportunityService(OpportunityRepository opportunityRepository) {
-        this.opportunityRepository = opportunityRepository;
-    }
 
     @GetMapping
     public List<Opportunity> getOpportunities() {

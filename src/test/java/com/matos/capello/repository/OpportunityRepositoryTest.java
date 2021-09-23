@@ -22,7 +22,7 @@ class OpportunityRepositoryTest {
     }
 
     @Test
-    void testSearchExistentExistentOpportunityByKey() {
+    void testSearchExistentOpportunityByKey() {
         // given
         String key = "OPP-0001";
         Opportunity opportunity = new Opportunity(
@@ -43,6 +43,30 @@ class OpportunityRepositoryTest {
 
         //then
         assertThat(expected).isEqualTo(opportunity);
+    }
+
+    @Test
+    void testSearchExistentOpportunityToString() {
+        // given
+        String key = "OPP-0001";
+        Opportunity opportunity = new Opportunity(
+                key,
+                "title",
+                "description",
+                "progress",
+                "suggestedBy",
+                "impacted_areas",
+                "priority",
+                null,
+                "comments"
+        );
+        this.underTest.save(opportunity);
+
+        // when
+        Opportunity expected = this.underTest.findOpportunityByKey(key);
+
+        //then
+        assertThat(expected.toString()).isEqualTo(opportunity.toString());
     }
 
     @Test
