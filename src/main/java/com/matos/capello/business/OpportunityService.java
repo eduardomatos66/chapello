@@ -20,20 +20,7 @@ public class OpportunityService {
 
     @GetMapping
     public List<Opportunity> getOpportunities() {
-
-        List<Opportunity> opportunities = new ArrayList<>();
-//        if (Strings.isNotBlank(fieldsString.get("key"))) {
-//            Opportunity opportunity = this.opportunityRepository.findOpportunityByKey(fieldsString.get("key"));
-//            opportunities.add(opportunity);
-//        } else if (id != null && id > 0) {
-//        if (id != null && id > 0) {
-//            Opportunity opportunity = this.opportunityRepository.findById(id).orElse(null);
-//            opportunities.add(opportunity);
-//        } else {
-            opportunities = this.opportunityRepository.findAll();
-//        }
-
-        return opportunities;
+        return this.opportunityRepository.findAll();
     }
 
     public Opportunity getOpportunityById(Long opportunityId) {

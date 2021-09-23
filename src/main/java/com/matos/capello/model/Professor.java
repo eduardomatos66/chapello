@@ -26,6 +26,7 @@ public class Professor extends Stakeholder {
     private Long id;
 
     @ManyToOne
+    @JoinColumn(name = "institute_id")
     private Institute institute;
 
     public Professor(String name, String email, Institute institute) {

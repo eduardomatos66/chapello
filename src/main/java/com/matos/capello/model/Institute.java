@@ -23,7 +23,7 @@ public class Institute {
     private Long id;
     private String shortName;
     private String longName;
-    @OneToMany
+    @OneToMany(mappedBy = "institute")
     private List<Professor> professorList;
 
     public Institute(String shortName, String longName) {

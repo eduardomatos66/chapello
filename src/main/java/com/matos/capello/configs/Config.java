@@ -1,6 +1,8 @@
 package com.matos.capello.configs;
 
+import com.matos.capello.model.Institute;
 import com.matos.capello.model.Opportunity;
+import com.matos.capello.repository.InstituteRepository;
 import com.matos.capello.repository.OpportunityRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
@@ -11,10 +13,13 @@ import java.time.Month;
 import java.util.List;
 
 @Configuration
-public class OpportunityConfig {
+public class Config {
 
     @Bean
-    CommandLineRunner commandLineRunner(OpportunityRepository repository) {
+    CommandLineRunner commandLineRunner(
+            OpportunityRepository opportunityRepository,
+            InstituteRepository instituteRepository) {
+
         return args -> {
             Opportunity o1 = new Opportunity(
                     "OPP-0001",
@@ -45,8 +50,18 @@ public class OpportunityConfig {
                     LocalDate.of(2020, Month.AUGUST, 21),
                     ""
             );
+            Institute i1 = new Institute(
+                    "CIn/UFPE",
+                    "Centro de Informática da Universidade Federal de Pernambuco"
+            );
 
-            repository.saveAll(List.of(o1, o2));
+            Institute i2 = new Institute(
+                    "INDT",
+                    "Instituto de Tecnologia"
+            );
+
+            opportunityRepository.saveAll(List.of(o1, o2));
+            instituteRepository.saveAll(List.of(i1, i2));
         };
     }
 

@@ -7,7 +7,7 @@ import javax.persistence.*;
 @Data
 @Entity
 @Table(name = "stakeholder")
-public class Stakeholder {
+public abstract class Stakeholder {
     @Id
     @SequenceGenerator(
             name="stakeholder_sequence",
